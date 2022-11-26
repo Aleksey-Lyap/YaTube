@@ -64,7 +64,7 @@ class Follow(CreatedModel):
         on_delete=models.CASCADE,
         related_name='follower',
     )
-    author =  models.ForeignKey(
+    author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         related_name='following',

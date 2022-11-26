@@ -9,6 +9,7 @@ from core.models import User
 
 from yatube.settings import NUMBER_OF_POSTS
 
+
 @cache_page(20)
 def index(request):
     post_list = Post.objects.select_related('author', 'group')
@@ -19,6 +20,7 @@ def index(request):
         'page_obj': page_obj,
     }
     return render(request, 'posts/index.html', context)
+
 
 def group_posts(request, slug):
     group = get_object_or_404(Group, slug=slug)
@@ -32,10 +34,13 @@ def group_posts(request, slug):
     }
     return render(request, 'posts/group_list.html', context)
 
+
 def profile(request, username):
     author = get_object_or_404(User, username=username)
     posts = author.posts.select_related()
-    if request.user.is_authenticated and  request.user.follower.filter(author=author).exists():
+    if request.user.is_authenticated and (
+            request.user.follower.filter(author=author).exists()
+        ):
         following = True
     else:
         following = False
@@ -49,12 +54,11 @@ def profile(request, username):
     }
     return render(request, 'posts/profile.html', context)
 
+
 def post_detail(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
     form = CommentForm(request.POST or None)
-    comments = Comment.objects.filter(post_id= post.id)
-
-
+    comments = Comment.objects.filter(post_id=post.id)
     context = {
         'form': form,
         'post': post,
@@ -118,6 +122,7 @@ def follow_index(request):
     }
     return render(request, 'posts/follow.html', context)
 
+
 @login_required
 def profile_follow(request, username):
     follow_author = get_object_or_404(User, username=username)
@@ -129,7 +134,9 @@ def profile_follow(request, username):
             user=request.user,
             author=follow_author
         )
-    return redirect (reverse ('posts:profile', kwargs={'username': follow_author.username}))
+    return redirect(reverse(
+            'posts:profile', kwargs={'username': follow_author.username}
+        ))
 
 @login_required
 def profile_unfollow(request, username):

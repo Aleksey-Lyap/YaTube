@@ -22,7 +22,6 @@ class PostURLTests(TestCase):
             author=cls.user,
             group=cls.group,
         )
-        
 
     def setUp(self):
         self.guest_client = Client()
