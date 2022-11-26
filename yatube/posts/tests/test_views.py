@@ -78,6 +78,7 @@ class PaginatorViewsTest(TestCase):
 
     def setUp(self):
         self.guest_client = Client()
+        cache.clear()
 
     def test_page_1_paginator_guest_client(self):
         '''Проверка количества постов на первой страницы. '''
@@ -93,15 +94,17 @@ class PaginatorViewsTest(TestCase):
         for page, count in pages.items():
             with self.subTest(page=page):
                 response = self.guest_client.get(page)
-                #self.assertIsInstance(response.context['page_obj'], Paginator)
-                #self.assertEqual(len(response.context['page_obj']), count)
+                self.assertIsInstance(
+                        response.context['page_obj'].paginator, Paginator
+                )
+                self.assertEqual(len(response.context['page_obj']), count)
 
     def test_page_2_paginator_guest_client(self):
         '''Проверка количества постов на второй страницы. '''
         pages = {
             reverse('posts:index'): 3,
             reverse(
-                'posts:profile', kwargs={'username': f'{self.user.username}'}
+                'posts:profile', kwargs={'username': f'{self.user}'}
             ): 3,
             reverse(
                 'posts:group_list', kwargs={'slug': f'{self.group.slug}'}
@@ -110,7 +113,9 @@ class PaginatorViewsTest(TestCase):
         for page, count in pages.items():
             with self.subTest(page=page):
                 response = self.guest_client.get(page + '?page=2')
-                self.assertIsInstance(response.context['page_obj'].paginator, Paginator)
+                self.assertIsInstance(
+                        response.context['page_obj'].paginator, Paginator
+                )
                 self.assertEqual(len(response.context['page_obj']), count)
 
 

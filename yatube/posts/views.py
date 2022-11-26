@@ -10,7 +10,7 @@ from core.models import User
 from yatube.settings import NUMBER_OF_POSTS
 
 
-@cache_page(20)
+@cache_page(60*20, key_prefix='index_page')
 def index(request):
     post_list = Post.objects.select_related('author', 'group')
     paginator = Paginator(post_list, NUMBER_OF_POSTS)
@@ -47,8 +47,8 @@ def profile(request, username):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     context = {
-        'author': author,
         'page_obj': page_obj,
+        'author': author,
         'following': following,
     }
     return render(request, 'posts/profile.html', context)
