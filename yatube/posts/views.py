@@ -39,8 +39,7 @@ def profile(request, username):
     author = get_object_or_404(User, username=username)
     posts = author.posts.select_related()
     if request.user.is_authenticated and (
-            request.user.follower.filter(author=author).exists()
-        ):
+            request.user.follower.filter(author=author).exists()):
         following = True
     else:
         following = False
@@ -135,8 +134,8 @@ def profile_follow(request, username):
             author=follow_author
         )
     return redirect(reverse(
-            'posts:profile', kwargs={'username': follow_author.username}
-        ))
+        'posts:profile', kwargs={'username': follow_author.username}))
+
 
 @login_required
 def profile_unfollow(request, username):
@@ -144,4 +143,5 @@ def profile_unfollow(request, username):
     data_follow = request.user.follower.filter(author=follow_author)
     if data_follow.exists():
         data_follow.delete()
-    return redirect (reverse ('posts:profile', kwargs={'username': follow_author.username}))
+    return redirect(
+        reverse('posts:profile', kwargs={'username': follow_author.username}))
