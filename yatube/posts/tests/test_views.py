@@ -95,7 +95,7 @@ class PaginatorViewsTest(TestCase):
             with self.subTest(page=page):
                 response = self.guest_client.get(page)
                 self.assertIsInstance(
-                        response.context['page_obj'].paginator, Paginator
+                    response.context['page_obj'].paginator, Paginator
                 )
                 self.assertEqual(len(response.context['page_obj']), count)
 
@@ -114,7 +114,7 @@ class PaginatorViewsTest(TestCase):
             with self.subTest(page=page):
                 response = self.guest_client.get(page + '?page=2')
                 self.assertIsInstance(
-                        response.context['page_obj'].paginator, Paginator
+                    response.context['page_obj'].paginator, Paginator
                 )
                 self.assertEqual(len(response.context['page_obj']), count)
 
