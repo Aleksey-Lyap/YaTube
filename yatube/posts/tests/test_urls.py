@@ -42,29 +42,25 @@ class PostURLTests(TestCase):
                 response = self.guest_client.get(address)
                 self.assertEqual(response.status_code, status_code)
 
-    def test_post_create_url_redirect_anonymous_on_login(self):
+    def test_post_create_post_edit_url_redirect_anonymous_on_login(self):
         """Страница по адресу /create/ перенаправит анонимного
         пользователя на страницу логина.
         """
-        response = self.guest_client.get(
-            reverse('posts:post_create'), follow=True
-        )
-        self.assertRedirects(
-            response, (reverse('auth:login') + '?next=' + '/create/'))
-
-    def test_post_edit_url_redirect_anonymous_on_login(self):
-        """Страница по адресу /posts/<int:post_id>/edit/ перенаправит
-        анонимного пользователя на страницу логина.
-        """
-        response = self.guest_client.get(
-            f'/posts/{self.post.id}/edit/', follow=True)
-        self.assertRedirects(
-            response, (
+        url_redirect = {
+            '/create/': (reverse('auth:login') + '?next=' + '/create/'),
+            f'/posts/{self.post.id}/edit/': (
                 reverse(
                     'auth:login'
                 ) + '?next=' + '/posts/' + str(self.post.pk) + '/edit/'
             )
-        )
+        }
+        for address, redirect in url_redirect.items():
+            with self.subTest(address=address):
+                response = self.guest_client.get(address, follow=True)
+                self.assertRedirects(
+                    response, redirect)
+
+    
 
     def test_non_existent_url(self):
         """Страница по несуществующему адресу не доступна"""
@@ -74,6 +70,7 @@ class PostURLTests(TestCase):
     def test_post_url_uses_correct_template(self):
         """Проверка шаблонов для неавторизованного пользователя."""
         templates_url_names = {
+            '/12/': 'core/404.html',
             '/': 'posts/index.html',
             f'/group/{self.group.slug}/': 'posts/group_list.html',
             f'/profile/{self.user.username}/': 'posts/profile.html',

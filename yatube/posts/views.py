@@ -10,7 +10,7 @@ from core.models import User
 from yatube.settings import NUMBER_OF_POSTS
 
 
-@cache_page(60 * 20, key_prefix='index_page')
+@cache_page(20, key_prefix='index_page')
 def index(request):
     post_list = Post.objects.select_related('author', 'group')
     paginator = Paginator(post_list, NUMBER_OF_POSTS)
@@ -141,7 +141,6 @@ def profile_follow(request, username):
 def profile_unfollow(request, username):
     follow_author = get_object_or_404(User, username=username)
     data_follow = request.user.follower.filter(author=follow_author)
-    if data_follow.exists():
-        data_follow.delete()
+    data_follow.delete()
     return redirect(
         reverse('posts:profile', kwargs={'username': follow_author.username}))

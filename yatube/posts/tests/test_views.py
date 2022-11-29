@@ -7,7 +7,7 @@ from django.urls import reverse
 from django.conf import settings
 from django.core.paginator import Paginator
 from django.core.files.uploadedfile import SimpleUploadedFile
-from posts.models import Group, Post
+from posts.models import Group, Post, Comment
 from core.models import User
 from django.core.cache import cache
 
@@ -149,6 +149,11 @@ class PostTests(TestCase):
             group=cls.group,
             image=cls.uploaded,
         )
+        cls.comment = Comment.objects.create(
+            post=cls.post,
+            text='Коммент',
+            author=cls.user
+        )
         cls.authorized_client = Client()
         cls.authorized_client.force_login(PostTests.user)
 
@@ -156,7 +161,7 @@ class PostTests(TestCase):
     def tearDownClass(cls):
         super().tearDownClass()
         shutil.rmtree(TEMP_MEDIA_ROOT, ignore_errors=True)
-
+    
     def setUp(self):
         cache.clear()
 
@@ -172,6 +177,9 @@ class PostTests(TestCase):
         response = self.authorized_client.get(reverse('posts:index'))
         self.assertIn('page_obj', response.context)
         self.assertGreater(len(response.context['page_obj']), 0)
+        self.assertIsInstance(
+                    response.context['page_obj'].paginator, Paginator
+                )
         object = response.context['page_obj'][0]
         self.same_obj(object)
 
@@ -182,6 +190,9 @@ class PostTests(TestCase):
         )
         self.assertIn('page_obj', response.context)
         self.assertGreater(len(response.context['page_obj']), 0)
+        self.assertIsInstance(
+                    response.context['page_obj'].paginator, Paginator
+                )
         object = response.context['page_obj'][0]
         object2 = response.context['group']
         self.same_obj(object)
@@ -194,6 +205,9 @@ class PostTests(TestCase):
         )
         self.assertIn('page_obj', response.context)
         self.assertGreater(len(response.context['page_obj']), 0)
+        self.assertIsInstance(
+                    response.context['page_obj'].paginator, Paginator
+                )
         object = response.context['page_obj'][0]
         object2 = response.context['author']
         self.same_obj(object)
@@ -207,7 +221,9 @@ class PostTests(TestCase):
             reverse('posts:post_detail', kwargs={'post_id': self.post.pk})
         )
         object = response.context['post']
+        object2 = response.context['comments']
         self.same_obj(object)
+        self.assertIn(self.comment, object2)
 
     def test_post_create_page_show_correct_context(self):
         """Шаблон post_create сформирован с правильным контекстом."""
@@ -255,3 +271,39 @@ class PostTests(TestCase):
         response_new = self.authorized_client.get(reverse('posts:index'))
         new_posts = response_new.content
         self.assertNotEqual(old_posts, new_posts)
+
+
+class FollowTest(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.author = User.objects.create(username='author')
+        cls.user_follow = User.objects.create(username='follow')
+        cls.user_unfollow = User.objects.create(username='unfollow')
+        cls.post = Post.objects.create(
+            text='Тестовый текст',
+            author=cls.author,
+        )
+
+    def setUp(self):
+        self.authorized_client_follow = Client()
+        self.authorized_client_follow.force_login(FollowTest.user_follow)
+        self.authorized_client_unfollow = Client()
+        self.authorized_client_unfollow.force_login(FollowTest.user_unfollow)
+        cache.clear()
+
+    def test_follow_index(self):
+        self.authorized_client_follow.get(
+            reverse('posts:profile_follow', kwargs={'username':'author'})
+        )
+        self.authorized_client_unfollow.get(
+            reverse('posts:profile_unfollow', kwargs={'username': 'author'})
+        )
+        response = self.authorized_client_follow.get(
+            reverse('posts:follow_index')
+        )
+        response2 = self.authorized_client_unfollow.get(
+            reverse('posts:follow_index')
+        )
+        self.assertIn(self.post, response.context['page_obj'])
+        self.assertNotIn(self.post, response2.context['page_obj'])

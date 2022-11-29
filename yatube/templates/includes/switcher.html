@@ -1,0 +1,30 @@
+{% if user.is_authenticated %}
+  <div class="row my-3">
+    <ul class="nav nav-tabs">
+      <li class="nav-item">
+        <a 
+        {% if request.path == '/' %} 
+        class="active nav-link" 
+        {% else %} 
+        class="nav-link" 
+        {% endif %}
+        href="{% url 'posts:index' %}"
+        >
+          <h5>Все авторы</h5>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a 
+        {% if request.path == '/follow/' %} 
+        class="active nav-link" 
+        {% else %} 
+        class="nav-link" 
+        {% endif %}
+        href="{% url 'posts:follow_index' %}"
+        >
+          <h5>Избранные авторы</h5>
+        </a>
+      </li>
+    </ul>
+  </div>
+{% endif %}

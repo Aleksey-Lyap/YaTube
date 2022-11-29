@@ -5,7 +5,7 @@
 {% block content %}
 {% load thumbnail %}
   <h1>Посты избранных авторов</h1>
-  {% include 'posts/includes/switcher.html' %}
+  {% include 'includes/switcher.html' %}
   {% for post in page_obj %}
   <article>
     <ul>

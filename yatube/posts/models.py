@@ -28,6 +28,9 @@ class Post(CreatedModel):
     class Meta:
         ordering = ['-pub_date']
         default_related_name = 'posts'
+        verbose_name = 'Пост'
+        verbose_name_plural = 'Посты'
+
 
     def __str__(self):
         return self.text[:15]
@@ -37,6 +40,10 @@ class Group(models.Model):
     title = models.CharField(max_length=200)
     slug = models.SlugField(unique=True)
     description = models.TextField()
+
+    class Meta:
+        verbose_name = 'Группа'
+        verbose_name_plural = 'Группы'
 
     def __str__(self):
         return self.title
@@ -53,9 +60,11 @@ class Comment(CreatedModel):
 
     class Meta:
         ordering = ['-pub_date']
+        verbose_name = 'Комментарий'
+        verbose_name_plural = 'Комментарии'
 
     def __str__(self):
-        return self.text
+        return self.text[:15]
 
 
 class Follow(CreatedModel):
@@ -69,3 +78,11 @@ class Follow(CreatedModel):
         on_delete=models.CASCADE,
         related_name='following',
     )
+
+    class Meta:
+        verbose_name = 'Подписка на автора'
+        verbose_name_plural = 'Подписки на авторов'
+        constraints = [
+            models.UniqueConstraint(fields=['user', 'author'], name='user_author'),
+           # models.CheckConstraint(check=Follow(user=author), name='age_gte_18'), 
+        ]

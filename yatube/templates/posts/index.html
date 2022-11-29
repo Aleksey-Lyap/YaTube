@@ -6,8 +6,8 @@
 {% load thumbnail %}
 {% load cache %}
   <h1>Последние обновления на сайте</h1>
-  {% cache 20 sidebar %}
-  {% include 'posts/includes/switcher.html' %}
+  {% cache 20 page_obj.page %}
+  {% include 'includes/switcher.html' %}
   {% for post in page_obj %}
   <article>
     <ul>

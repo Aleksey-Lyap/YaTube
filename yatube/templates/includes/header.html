@@ -18,23 +18,33 @@
       </li>
       {% if user.is_authenticated %}
       <li class="nav-item"> 
-        <a class="nav-link" href="{% url 'posts:post_create' %}">Новая запись</a>
+        <a class="nav-link {% if view_name  == 'posts:post_create' %}active
+        {% endif %}" href="{% url 'posts:post_create' %}">Новая запись</a>
       </li>
       <li class="nav-item"> 
         <a class="nav-link link-light" href="{% url 'posts:index' %}">Изменить пароль</a>
       </li>
       <li class="nav-item"> 
-        <a class="nav-link link-light" href="{% url 'users:logout' %}">Выйти</a>
+        <a class="nav-link link-light {% if view_name  == 'users:logout' %}active
+        {% endif %}" href="{% url 'users:logout' %}">Выйти</a>
       </li>
       <li>
         Пользователь: {{ user.username }}
       </li>
       {% else %}
       <li class="nav-item"> 
-        <a class="nav-link link-light" href="{% url 'users:login' %}">Войти</a>
+        <a{% if request.path == '/auth/login/' %} 
+            class="active nav-link link-light" 
+          {% else %} 
+            class="nav-link link-light" 
+          {% endif %} href="{% url 'users:login' %}">Войти</a>
       </li>
       <li class="nav-item"> 
-        <a class="nav-link link-light" href="{% url 'users:signup' %}">Регистрация</a>
+        <a{% if request.path == '/auth/signup/' %} 
+            class="active nav-link link-light" 
+          {% else %} 
+            class="nav-link link-light" 
+          {% endif %} href="{% url 'users:signup' %}">Регистрация</a>
       </li>
       {% endif %}
     </ul>
