@@ -60,8 +60,6 @@ class PostURLTests(TestCase):
                 self.assertRedirects(
                     response, redirect)
 
-    
-
     def test_non_existent_url(self):
         """Страница по несуществующему адресу не доступна"""
         response = self.guest_client.get('posts/home/')

@@ -31,7 +31,6 @@ class Post(CreatedModel):
         verbose_name = 'Пост'
         verbose_name_plural = 'Посты'
 
-
     def __str__(self):
         return self.text[:15]
 
@@ -83,6 +82,9 @@ class Follow(CreatedModel):
         verbose_name = 'Подписка на автора'
         verbose_name_plural = 'Подписки на авторов'
         constraints = [
-            models.UniqueConstraint(fields=['user', 'author'], name='user_author'),
-           # models.CheckConstraint(check=Follow(user=author), name='age_gte_18'), 
+            models.UniqueConstraint(
+                fields=['user', 'author'], name='user_author'
+            ),
+            #  models.CheckConstraint(
+            #  check=Follow(user=author), name='age_gte_18')
         ]

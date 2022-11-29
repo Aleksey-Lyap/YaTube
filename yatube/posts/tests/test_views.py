@@ -161,7 +161,7 @@ class PostTests(TestCase):
     def tearDownClass(cls):
         super().tearDownClass()
         shutil.rmtree(TEMP_MEDIA_ROOT, ignore_errors=True)
-    
+
     def setUp(self):
         cache.clear()
 
@@ -178,8 +178,8 @@ class PostTests(TestCase):
         self.assertIn('page_obj', response.context)
         self.assertGreater(len(response.context['page_obj']), 0)
         self.assertIsInstance(
-                    response.context['page_obj'].paginator, Paginator
-                )
+            response.context['page_obj'].paginator, Paginator
+        )
         object = response.context['page_obj'][0]
         self.same_obj(object)
 
@@ -191,8 +191,8 @@ class PostTests(TestCase):
         self.assertIn('page_obj', response.context)
         self.assertGreater(len(response.context['page_obj']), 0)
         self.assertIsInstance(
-                    response.context['page_obj'].paginator, Paginator
-                )
+            response.context['page_obj'].paginator, Paginator
+        )
         object = response.context['page_obj'][0]
         object2 = response.context['group']
         self.same_obj(object)
@@ -206,8 +206,8 @@ class PostTests(TestCase):
         self.assertIn('page_obj', response.context)
         self.assertGreater(len(response.context['page_obj']), 0)
         self.assertIsInstance(
-                    response.context['page_obj'].paginator, Paginator
-                )
+            response.context['page_obj'].paginator, Paginator
+        )
         object = response.context['page_obj'][0]
         object2 = response.context['author']
         self.same_obj(object)
@@ -294,7 +294,7 @@ class FollowTest(TestCase):
 
     def test_follow_index(self):
         self.authorized_client_follow.get(
-            reverse('posts:profile_follow', kwargs={'username':'author'})
+            reverse('posts:profile_follow', kwargs={'username': 'author'})
         )
         self.authorized_client_unfollow.get(
             reverse('posts:profile_unfollow', kwargs={'username': 'author'})
