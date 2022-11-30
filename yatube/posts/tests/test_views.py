@@ -7,9 +7,9 @@ from django.urls import reverse
 from django.conf import settings
 from django.core.paginator import Paginator
 from django.core.files.uploadedfile import SimpleUploadedFile
-from posts.models import Group, Post, Comment
-from core.models import User
 from django.core.cache import cache
+from posts.models import Group, Post, Comment, Follow
+from core.models import User
 
 TEMP_MEDIA_ROOT = tempfile.mkdtemp(dir=settings.BASE_DIR)
 
@@ -283,7 +283,13 @@ class FollowTest(TestCase):
         cls.post = Post.objects.create(
             text='Тестовый текст',
             author=cls.author,
+            image=None,
         )
+
+    @classmethod
+    def tearDownClass(cls):
+        super().tearDownClass()
+        shutil.rmtree(TEMP_MEDIA_ROOT, ignore_errors=True)
 
     def setUp(self):
         self.authorized_client_follow = Client()
@@ -292,18 +298,52 @@ class FollowTest(TestCase):
         self.authorized_client_unfollow.force_login(FollowTest.user_unfollow)
         cache.clear()
 
-    def test_follow_index(self):
-        self.authorized_client_follow.get(
-            reverse('posts:profile_follow', kwargs={'username': 'author'})
+    def test_user_follow_author(self):
+        self.assertFalse(
+            Follow.objects.filter(user=self.user_follow, author=self.author)
         )
+        self.authorized_client_follow.get(
+            reverse('posts:profile_follow', kwargs={'username': self.author})
+        )
+        self.assertTrue(
+            Follow.objects.filter(user=self.user_follow, author=self.author)
+        )
+
+    def test_user_unfollow_author(self):
+        Follow.objects.create(user=self.user_unfollow, author=self.author)
         self.authorized_client_unfollow.get(
-            reverse('posts:profile_unfollow', kwargs={'username': 'author'})
+            reverse(
+                'posts:profile_unfollow', kwargs={'username': self.author}
+            )
+        )
+        self.assertFalse(
+            Follow.objects.filter(user=self.user_unfollow, author=self.author)
+        )
+
+    def test_follow_appear_post(self):
+        self.authorized_client_follow.get(
+            reverse('posts:profile_follow', kwargs={'username': self.author})
+        )
+        self.post = Post.objects.create(
+            author=self.author,
+            text='text',
         )
         response = self.authorized_client_follow.get(
             reverse('posts:follow_index')
         )
-        response2 = self.authorized_client_unfollow.get(
+        self.assertIn(self.post, response.context['page_obj'])
+
+    def test_unfollow_not_appear_post(self):
+        self.authorized_client_unfollow.get(
+            reverse(
+                'posts:profile_unfollow', kwargs={'username': self.author}
+            )
+        )
+        self.post = Post.objects.create(
+            author=self.author,
+            text='text2323',
+        )
+        response = self.authorized_client_unfollow.get(
             reverse('posts:follow_index')
         )
-        self.assertIn(self.post, response.context['page_obj'])
-        self.assertNotIn(self.post, response2.context['page_obj'])
+        self.assertNotIn(self.post, response.context['page_obj'])

@@ -22,7 +22,8 @@ class Post(CreatedModel):
     image = models.ImageField(
         verbose_name='Картинка',
         upload_to='posts/',
-        blank=True
+        blank=True,
+        null=True
     )
 
     class Meta:
@@ -85,6 +86,4 @@ class Follow(CreatedModel):
             models.UniqueConstraint(
                 fields=['user', 'author'], name='user_author'
             ),
-            #  models.CheckConstraint(
-            #  check=Follow(user=author), name='age_gte_18')
         ]

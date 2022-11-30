@@ -6,6 +6,7 @@ from django.test import Client, TestCase, override_settings
 from django.urls import reverse
 from django.conf import settings
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.core.cache import cache
 from posts.models import Post, Group, Comment
 from core.models import User
 
@@ -30,6 +31,9 @@ class PostCreateFormTests(TestCase):
     def tearDownClass(cls):
         super().tearDownClass()
         shutil.rmtree(TEMP_MEDIA_ROOT, ignore_errors=True)
+
+    def setUp(self):
+        cache.clear()
 
     def test_create_post(self):
         """Валидная форма создает новый пост."""
@@ -85,7 +89,6 @@ class PostCreateFormTests(TestCase):
             author=self.user,
             group=self.group,
             image=uploaded
-
         )
         form_data = {
             'text': 'Новый текст',
