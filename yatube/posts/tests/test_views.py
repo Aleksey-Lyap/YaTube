@@ -321,9 +321,7 @@ class FollowTest(TestCase):
         )
 
     def test_follow_appear_post(self):
-        self.authorized_client_follow.get(
-            reverse('posts:profile_follow', kwargs={'username': self.author})
-        )
+        Follow.objects.create(user=self.user_follow, author=self.author)
         self.post = Post.objects.create(
             author=self.author,
             text='text',
@@ -334,6 +332,9 @@ class FollowTest(TestCase):
         self.assertIn(self.post, response.context['page_obj'])
 
     def test_unfollow_not_appear_post(self):
+        self.assertFalse(
+            Follow.objects.filter(user=self.user_unfollow, author=self.author)
+        )
         self.authorized_client_unfollow.get(
             reverse(
                 'posts:profile_unfollow', kwargs={'username': self.author}
