@@ -1,20 +1,44 @@
 {% extends "base.html" %}
 {% block title %}Технологии{% endblock %}
 {% block content %}
-<div class="row">
-  <h1>Вот что я умею</h1>
+{% load static %}
+<div style="font-family:Verdana, sans-serif" class="row">
   <aside class="col-12 col-md-3">
+    <h2>Инструменты:</h2>
     <ul class="list-group list-group-flush">
-      <li class="list-group-item">
+      <li style="font-family:Verdana, sans-serif" class="list-group-item">
+        <img src="{% static 'img/python.png' %}" width="40" height="40" 
+        class="img-fluid rounded">
         Python
       </li>
-      <li class="list-group-item">
+      <li style="font-family:Verdana, sans-serif" class="list-group-item">
+        <img src="{% static 'img/django.png' %}" width="40" height="40" 
+        class="img-fluid rounded">
         Django
+      </li>
+      <li style="font-family:Verdana, sans-serif" class="list-group-item">
+        <img src="{% static 'img/PA.png' %}" width="40" height="40" 
+        class="img-fluid rounded">
+        pythonanywhere.com
+      </li>
+      <li style="font-family:Verdana, sans-serif" class="list-group-item">
+        <img src="{% static 'img/VScode.png' %}" width="40" height="40" 
+        class="img-fluid rounded">
+        VS Code
       </li>
     </ul>
   </aside>
-  <article class="col-12 col-md-9">
-    <p>Текст страницы "Технологии"</p>
-  </article>
+  <aside class="col-12 col-md-9">
+    <h2>Что это за проект?</h2>
+    <h3><p>Сайт был создан в рамках обучения на курсе Яндекс-Практикум: Бэкенд-разработчик на Python</p></h3>
+    <h4>
+      <p><b>Основные цели:</b></p>
+      <li>Разобраться в работе IDE Visual Studio Code</li><hr>
+      <li>Улучшить понимание принципов ООП</li><hr>
+      <li>Познакомиться с возможностями фреймворка Django</li><hr>
+      <li>Сделать первый проект для своего портфолио</li><hr>
+      <li>Получить представления о фронтенд: HTML и CSS</li><hr>
+    </h4>
+  </aside >
 </div>
 {% endblock %} 

@@ -1,9 +1,29 @@
 {% extends "base.html" %}
 {% block title %}Об авторе проекта{% endblock %}
 {% block content %}
-<h1>Привет, я автор</h1>
-<p>
-  Тут я размещу информацию о себе, используя свои умения верстать.
-  Картинки, блоки, элементы бустрап. А может быть, просто напишу несколько абзацев текста. 
-</p>
+{% load static %}
+<div style="font-family:Tahoma, sans-serif" class="row">
+  <aside class="col-12 col-md-5">
+    <img src="{% static 'img/photo.jpg' %}" width="350" class="img-fluid rounded">
+  </aside>
+  <article class="col-12 col-md-7">
+    <div class="col-12 md-8">
+        <h2 class="display-5">Привет, я Алексей!:)</h2><hr>
+        <p> 
+          <h4>
+            И это мой первый проект в роли разработчика на ЯП Python.<br>
+          </h4>
+        </p>
+        <p>
+          <h4>Уверен, дальше будет только интереснее.</h4>
+        </p>
+        <p>
+          <h4>Социальные сети я не очень люблю, и пока что меня можно найти сдесь
+          <a href="https://t.me/alekseilyapin" target="_blank" title="telegram" alt="...">
+            <img src="/static/img/telegram.png" width="30"> 
+          </a>
+          </h4>
+        </p>
+    </div>
+  </article>
 {% endblock %}
