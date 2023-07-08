@@ -12,7 +12,7 @@
 #### Запуск проекта в dev-режиме
 
 - Склонируйте репозиторий:  
-``` git clone <название репозитория> ```
+``` git clone git@github.com:Aleksey-Lyap/YaTube.git ```
 - Установите и активируйте виртуальное окружение:  
 ``` python -m venv venv ```  
 ``` source venv/Scripts/activate ```
