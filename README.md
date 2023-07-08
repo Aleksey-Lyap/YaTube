@@ -15,7 +15,8 @@
 ``` git clone git@github.com:Aleksey-Lyap/YaTube.git ```
 - Установите и активируйте виртуальное окружение:  
 ``` python -m venv venv ```  
-``` source venv/Scripts/activate ```
+* Для Linux/MacOS: `source venv/bin/activate`
+* Если у вас Windows `source venv/Scripts/activate`
 - Установите зависимости из файла requirements.txt:
 ``` pip install -r requirements.txt ```
 - Перейдите в папку yatube/yatube.
